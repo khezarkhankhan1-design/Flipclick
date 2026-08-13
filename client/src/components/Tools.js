@@ -5,23 +5,27 @@ function Tools({ onConversion }) {
   const [activeTab, setActiveTab] = useState('converter');
   const [selectedFile, setSelectedFile] = useState(null);
   const [converting, setConverting] = useState(false);
+  const [message, setMessage] = useState('');
 
   const handleFileSelect = (e) => {
     setSelectedFile(e.target.files[0]);
+    setMessage('');
   };
 
   const handleConvert = async (conversionType) => {
     if (!selectedFile) {
-      alert('Please select a file first');
+      setMessage('Please select a file first');
       return;
     }
 
     setConverting(true);
+    setMessage('Converting... Please wait');
     const formData = new FormData();
     formData.append('file', selectedFile);
 
     try {
-      const response = await fetch(`/api/convert/${conversionType}`, {
+      const apiUrl = process.env.REACT_APP_API_URL || window.location.origin;
+      const response = await fetch(`${apiUrl}/api/convert/${conversionType}`, {
         method: 'POST',
         body: formData
       });
@@ -37,14 +41,23 @@ function Tools({ onConversion }) {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
 
-        // Log conversion
-        fetch('/api/stats/conversion', { method: 'POST' });
-        fetch('/api/stats/download', { method: 'POST' });
+        setMessage('✅ Conversion successful! Download started.');
+        
+        // Log stats
+        fetch(`${apiUrl}/api/stats?action=conversion`, { method: 'POST' });
+        fetch(`${apiUrl}/api/stats?action=download`, { method: 'POST' });
         onConversion();
+
+        setTimeout(() => {
+          setSelectedFile(null);
+          setMessage('');
+        }, 2000);
+      } else {
+        setMessage('❌ Conversion failed. Try again.');
       }
     } catch (error) {
       console.error('Conversion error:', error);
-      alert('Conversion failed. Please try again.');
+      setMessage('❌ Error: ' + error.message);
     }
 
     setConverting(false);
@@ -108,6 +121,12 @@ function Tools({ onConversion }) {
                 <div className="file-info">
                   <p>📄 {selectedFile.name}</p>
                   <p className="file-size">({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)</p>
+                </div>
+              )}
+
+              {message && (
+                <div className="message">
+                  <p>{message}</p>
                 </div>
               )}
 

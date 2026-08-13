@@ -14,7 +14,9 @@ function App() {
 
   useEffect(() => {
     // Log visit
-    fetch('/api/stats/visit', { method: 'POST' })
+    const apiUrl = process.env.REACT_APP_API_URL || window.location.origin;
+    
+    fetch(`${apiUrl}/api/stats?action=visit`, { method: 'POST' })
       .then(res => res.json())
       .catch(err => console.error('Failed to log visit:', err));
 
@@ -23,7 +25,9 @@ function App() {
   }, []);
 
   const fetchStats = () => {
-    fetch('/api/stats')
+    const apiUrl = process.env.REACT_APP_API_URL || window.location.origin;
+    
+    fetch(`${apiUrl}/api/stats`)
       .then(res => res.json())
       .then(data => setStats(data))
       .catch(err => console.error('Failed to fetch stats:', err));

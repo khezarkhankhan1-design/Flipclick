@@ -1,1 +1,57 @@
-const express = require('express');\nconst router = express.Router();\nconst fs = require('fs');\nconst path = require('path');\n\nconst statsFile = path.join(__dirname, '../../stats.json');\n\n// Initialize stats file if it doesn't exist\nconst initStats = () => {\n  if (!fs.existsSync(statsFile)) {\n    const defaultStats = {\n      totalVisits: 0,\n      totalConversions: 0,\n      totalDownloads: 0,\n      createdAt: new Date().toISOString(),\n      lastUpdated: new Date().toISOString()\n    };\n    fs.writeFileSync(statsFile, JSON.stringify(defaultStats, null, 2));\n  }\n};\n\ninitStats();\n\n// Get stats\nrouter.get('/', (req, res) => {\n  try {\n    if (!fs.existsSync(statsFile)) {\n      return res.json({ totalVisits: 0, totalConversions: 0, totalDownloads: 0 });\n    }\n    const stats = JSON.parse(fs.readFileSync(statsFile, 'utf8'));\n    res.json(stats);\n  } catch (error) {\n    res.json({ totalVisits: 0, totalConversions: 0, totalDownloads: 0 });\n  }\n});\n\n// Increment visits\nrouter.post('/visit', (req, res) => {\n  try {\n    let stats = { totalVisits: 0, totalConversions: 0, totalDownloads: 0, lastUpdated: new Date().toISOString() };\n    if (fs.existsSync(statsFile)) {\n      stats = JSON.parse(fs.readFileSync(statsFile, 'utf8'));\n    }\n    stats.totalVisits += 1;\n    stats.lastUpdated = new Date().toISOString();\n    fs.writeFileSync(statsFile, JSON.stringify(stats, null, 2));\n    res.json({ success: true, visits: stats.totalVisits });\n  } catch (error) {\n    res.json({ success: true, visits: 1 });\n  }\n});\n\n// Increment conversions\nrouter.post('/conversion', (req, res) => {\n  try {\n    let stats = { totalVisits: 0, totalConversions: 0, totalDownloads: 0, lastUpdated: new Date().toISOString() };\n    if (fs.existsSync(statsFile)) {\n      stats = JSON.parse(fs.readFileSync(statsFile, 'utf8'));\n    }\n    stats.totalConversions += 1;\n    stats.lastUpdated = new Date().toISOString();\n    fs.writeFileSync(statsFile, JSON.stringify(stats, null, 2));\n    res.json({ success: true, conversions: stats.totalConversions });\n  } catch (error) {\n    res.json({ success: true, conversions: 1 });\n  }\n});\n\n// Increment downloads\nrouter.post('/download', (req, res) => {\n  try {\n    let stats = { totalVisits: 0, totalConversions: 0, totalDownloads: 0, lastUpdated: new Date().toISOString() };\n    if (fs.existsSync(statsFile)) {\n      stats = JSON.parse(fs.readFileSync(statsFile, 'utf8'));\n    }\n    stats.totalDownloads += 1;\n    stats.lastUpdated = new Date().toISOString();\n    fs.writeFileSync(statsFile, JSON.stringify(stats, null, 2));\n    res.json({ success: true, downloads: stats.totalDownloads });\n  } catch (error) {\n    res.json({ success: true, downloads: 1 });\n  }\n});\n\nmodule.exports = router;
+const fs = require('fs');
+const path = require('path');
+
+const statsFile = path.join(process.cwd(), 'stats.json');
+
+const getStats = () => {
+  try {
+    if (!fs.existsSync(statsFile)) {
+      return { totalVisits: 0, totalConversions: 0, totalDownloads: 0 };
+    }
+    return JSON.parse(fs.readFileSync(statsFile, 'utf8'));
+  } catch (error) {
+    return { totalVisits: 0, totalConversions: 0, totalDownloads: 0 };
+  }
+};
+
+const saveStats = (stats) => {
+  try {
+    stats.lastUpdated = new Date().toISOString();
+    fs.writeFileSync(statsFile, JSON.stringify(stats, null, 2));
+  } catch (error) {
+    console.error('Error saving stats:', error);
+  }
+};
+
+export default function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method === 'GET') {
+    const stats = getStats();
+    return res.status(200).json(stats);
+  }
+
+  if (req.method === 'POST') {
+    const action = req.query.action;
+    let stats = getStats();
+
+    if (action === 'visit') {
+      stats.totalVisits += 1;
+    } else if (action === 'conversion') {
+      stats.totalConversions += 1;
+    } else if (action === 'download') {
+      stats.totalDownloads += 1;
+    }
+
+    saveStats(stats);
+    return res.status(200).json({ success: true, stats });
+  }
+
+  return res.status(405).json({ error: 'Method not allowed' });
+}
