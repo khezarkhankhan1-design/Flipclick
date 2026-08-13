@@ -1,0 +1,228 @@
+.tools {
+  padding: 80px 20px;
+  background: linear-gradient(to bottom, #f5f7fa 0%, #fff 100%);
+  min-height: 100vh;
+}
+
+.tools-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.tools h2 {
+  font-size: 48px;
+  text-align: center;
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.tools-subtitle {
+  text-align: center;
+  color: #666;
+  font-size: 18px;
+  margin: 0 0 40px 0;
+}
+
+.tools-tabs {
+  display: flex;
+  gap: 15px;
+  margin: 40px 0;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 12px 24px;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  color: #666;
+}
+
+.tab-btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: transparent;
+}
+
+.tools-content {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  min-height: 400px;
+}
+
+.tool-panel {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.upload-area {
+  margin-bottom: 30px;
+}
+
+#file-input {
+  display: none;
+}
+
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 60px 20px;
+  border: 2px dashed #667eea;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+}
+
+.upload-label:hover {
+  border-color: #764ba2;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+}
+
+.upload-icon {
+  font-size: 48px;
+}
+
+.upload-label p {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.upload-hint {
+  color: #999;
+  font-size: 14px;
+}
+
+.file-info {
+  background: #f5f7fa;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.file-info p {
+  margin: 5px 0;
+  color: #333;
+}
+
+.file-size {
+  font-size: 14px;
+  color: #666;
+}
+
+.conversion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.conversion-btn {
+  padding: 20px 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.conversion-btn:hover:not(:disabled) {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.conversion-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.conversion-icon {
+  font-size: 24px;
+}
+
+.coming-soon {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.coming-soon h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.coming-soon p {
+  color: #666;
+  margin: 10px 0;
+}
+
+.coming-soon-text {
+  font-size: 28px;
+  color: #667eea;
+  font-weight: bold;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@media (max-width: 768px) {
+  .tools {
+    padding: 40px 15px;
+  }
+
+  .tools h2 {
+    font-size: 32px;
+  }
+
+  .tools-content {
+    padding: 25px;
+  }
+
+  .conversion-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+
+  .upload-label {
+    padding: 40px 15px;
+  }
+}
